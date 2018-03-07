@@ -54,8 +54,9 @@ public class OrderDao {
 
     private BigDecimal findTotalOrderPrice(NewOrderJson json) {
         Cake cake = cakeDao.findById(json.getCakeId());
+        BigDecimal cakeAmount = BigDecimal.valueOf(json.getAmount());
 
-        return cake.getPrice();
+        return cake.getPrice().multiply(cakeAmount);
     }
 
     private void insertOrderCake(Long orderId, Long cakeId, Integer amount) {
