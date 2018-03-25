@@ -34,13 +34,34 @@ $(function () {
         });
     };
 
+    const validateNewOrderForm = function (newOrderJson) {
+            var isValid = true;
+            if (newOrderJson.customerName.trim() == '') {
+                $('input#customerName').addClass('is-invalid');
+                isValid = false;
+            } else {
+                $('input#customerName').removeClass('is-invalid');
+            }
+
+            if (!/^\d{1,14}(\.\d{1,2})?$/.test(newOrderJson.amount)) {
+                $('input#amount').addClass('is-invalid');
+                isValid = false;
+            } else {
+                $('input#amount').removeClass('is-invalid');
+            }
+
+            return isValid;
+        };
+
     $('#new-order-btn').on('click', function (e) {
         e.preventDefault();
         const newOrderJson = formToJson(newOrderForm());
-
-        postOrder(newOrderJson).then(function () {
-            clearNewCakeForm();
-        });
+        const isValid = validateNewOrderForm(newOrderJson);
+        if (isValid) {
+            postOrder(newOrderJson).then(function () {
+                clearNewCakeForm();
+            });
+        }
     });
 
     //when page is loaded
