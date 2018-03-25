@@ -12,7 +12,7 @@ $(function () {
     };
 
     const loadCakes = function () {
-        return $.get('/cakes/available');
+        return $.get('/cakes/all');
     };
 
     const postCake = function (json) {
@@ -23,16 +23,63 @@ $(function () {
         });
     };
 
+    const deactivateCake = function (cakeId) {
+            console.log("deactivate")
+            return $.post({
+                url: '/cakes/' + cakeId + '/deactivate',
+                contentType: 'application/json; charset=utf-8',
+                data: '{}'
+            });
+        };
+
+        const activateCake = function (cakeId) {
+            return $.post({
+                url: '/cakes/' + cakeId + '/activate',
+                contentType: 'application/json; charset=utf-8',
+                data: '{}'
+            });
+        };
+
+    const bindCakeButtonClicks = function () {
+            /*$('#new-cake-form tr').on('click', function (e) {
+                e.stopPropagation();
+                showCakes($(e.currentTarget).attr('data-cake-id'));
+            });*/
+
+            $('.deactivate-btn').on('click', function (e) {
+                e.stopPropagation();
+                deactivateCake($(e.currentTarget).attr('data-cake-id'))
+                    .then(refreshCakes);
+            });
+
+            $('.activate-btn').on('click', function (e) {
+                e.stopPropagation();
+                activateCake($(e.currentTarget).attr('data-cake-id'))
+                    .then(refreshCakes);
+            });
+        };
+
     const showCakes = function (cakes) {
-        const cakeRowTemplate = '<tr><th scope="row">#{cakeId}</th><td>#{cakeName}</td><td>#{cakePrice} €</td></tr>';
+        const cakeRowTemplate = '<tr><th scope="row">#{cakeId}</th><td>#{cakeName}</td><td>#{cakePrice} €</td><td>#{cakeAvailability}</td>' +
+        '<td>' +
+        '<button data-cake-id="#{cakeId}" type="button" class="deactivate-btn btn btn-danger #{deactivateBtnClass}">Deactivate</button> ' +
+        '<button data-cake-id="#{cakeId}" type="button" class="activate-btn btn btn-light #{activateBtnClass}">Activate</button>' +
+        '</td></tr>';
         const cakeRows = $.map(cakes, function (cake) {
             return cakeRowTemplate
                 .replace('#{cakeId}', cake.id)
                 .replace('#{cakeName}', cake.name)
-                .replace('#{cakePrice}', cake.price);
+                .replace('#{cakePrice}', cake.price)
+                .replace('#{cakeAvailability}', cake.available)
+                .replace('#{cakeId}', cake.id)
+                .replace('#{deactivateBtnClass}', cake.available ? '' : 'd-none')
+                .replace('#{cakeId}', cake.id)
+                .replace('#{activateBtnClass}', !cake.available ? '' : 'd-none');
         });
 
         cakesTableBody().html(cakeRows);
+
+        bindCakeButtonClicks();
     };
 
     const refreshCakes = function () {
@@ -85,7 +132,6 @@ $(function () {
                 });
         }
     });
-
 
     //when page is loaded
     refreshCakes();

@@ -42,7 +42,11 @@ public class CakeDao {
     }
 
     public void updateAvailability(Long cakeId, boolean availability) {
-        //TODO: update
+        List<Object> args = new ArrayList<>();
+        args.add(availability);
+        args.add(cakeId);
+
+        database.update("UPDATE CAKE SET AVAILABLE = ? WHERE ID = ?;", args.toArray());
     }
 
     private final class CakeMapper implements RowMapper<Cake> {

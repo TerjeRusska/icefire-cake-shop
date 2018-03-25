@@ -27,8 +27,13 @@ public class CakeController {
         return cakeDao.findAvailableCakes();
     }
 
-    @PostMapping("{cakeId}/deactivate")
-    public void findAvailableCakes(@PathVariable Long cakeId) {
+    @PostMapping("/{cakeId}/deactivate")
+    public void deactivateCakes(@PathVariable Long cakeId) {
         cakeDao.updateAvailability(cakeId, false);
+    }
+
+    @PostMapping("/{cakeId}/activate")
+    public void activateCakes(@PathVariable Long cakeId) {
+        cakeDao.updateAvailability(cakeId, true);
     }
 }

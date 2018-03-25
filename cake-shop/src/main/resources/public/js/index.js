@@ -42,8 +42,8 @@ $(function () {
             } else {
                 $('input#customerName').removeClass('is-invalid');
             }
-            //!/^\[0-9]{1}(\[1-9]{0,13})?$/
-            if (!/^[1-9]{1}[0-9]{0,13}?$/.test(newOrderJson.amount)) {
+            //Amount must be > 0 and an integer.
+            if (!/^[1-9]{1}[0-9]{0,3}?$/.test(newOrderJson.amount)) {
                 $('input#amount').addClass('is-invalid');
                 isValid = false;
             } else {
