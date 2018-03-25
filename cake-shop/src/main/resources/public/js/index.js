@@ -42,8 +42,8 @@ $(function () {
             } else {
                 $('input#customerName').removeClass('is-invalid');
             }
-
-            if (!/^\d{1,14}(\.\d{1,2})?$/.test(newOrderJson.amount)) {
+            //!/^\[0-9]{1}(\[1-9]{0,13})?$/
+            if (!/^[1-9]{1}[0-9]{0,13}?$/.test(newOrderJson.amount)) {
                 $('input#amount').addClass('is-invalid');
                 isValid = false;
             } else {
