@@ -41,11 +41,6 @@ $(function () {
         };
 
     const bindCakeButtonClicks = function () {
-            /*$('#new-cake-form tr').on('click', function (e) {
-                e.stopPropagation();
-                showCakes($(e.currentTarget).attr('data-cake-id'));
-            });*/
-
             $('.deactivate-btn').on('click', function (e) {
                 e.stopPropagation();
                 deactivateCake($(e.currentTarget).attr('data-cake-id'))

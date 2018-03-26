@@ -1,14 +1,13 @@
 package ee.cake.cake;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -16,37 +15,30 @@ import java.util.List;
 public class CakeDao {
 
     @Autowired
-    private JdbcTemplate database;
+    private CakeRepository cakeRepository;
 
     public List<Cake> findAvailableCakes() {
-        return database.query("SELECT * FROM CAKE WHERE AVAILABLE = TRUE;", new CakeMapper());
+        return cakeRepository.findByAvailable(true);
     }
 
     public List<Cake> findAllCakes() {
-        return database.query("SELECT * FROM CAKE;", new CakeMapper());
+        return cakeRepository.findAll();
     }
 
     public void insert(NewCakeJson json) {
-        List<Object> args = new ArrayList<>();
-        args.add(json.getName());
-        args.add(json.getPrice());
-        args.add(true);
-
-        database.update("INSERT INTO CAKE (name, price, available) VALUES (?,?,?);", args.toArray());
+        String name = json.getName();
+        BigDecimal price = json.getPrice();
+        cakeRepository.save(new Cake(name, price, true));
     }
 
     public Cake findById(Long cakeId) {
-        List<Object> args = new ArrayList<>();
-        args.add(cakeId);
-        return database.query("SELECT * FROM CAKE WHERE id = ?;", args.toArray(), new CakeMapper()).get(0);
+        return cakeRepository.findOne(cakeId);
     }
 
     public void updateAvailability(Long cakeId, boolean availability) {
-        List<Object> args = new ArrayList<>();
-        args.add(availability);
-        args.add(cakeId);
-
-        database.update("UPDATE CAKE SET AVAILABLE = ? WHERE ID = ?;", args.toArray());
+        Cake cakeToUpdate = cakeRepository.findOne(cakeId);
+        cakeToUpdate.setAvailable(availability);
+        cakeRepository.save(cakeToUpdate);
     }
 
     private final class CakeMapper implements RowMapper<Cake> {
