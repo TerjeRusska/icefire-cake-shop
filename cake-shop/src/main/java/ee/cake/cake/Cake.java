@@ -1,9 +1,6 @@
 package ee.cake.cake;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
@@ -14,7 +11,8 @@ public class Cake {
     private Long id;
     private String name;
     private BigDecimal price;
-    //private String currencyCode;
+    @Transient
+    private String currencyCode;
     private boolean available;
 
     public Cake(){}
@@ -49,13 +47,13 @@ public class Cake {
         this.price = price;
     }
 
-    /*public String getCurrencyCode() {
+    public String getCurrencyCode() {
         return currencyCode;
-    }*/
+    }
 
-    /*public void setCurrencyCode(String currencyCode) {
+    public void setCurrencyCode(String currencyCode) {
         this.currencyCode = currencyCode;
-    }*/
+    }
 
     public boolean isAvailable() {
         return available;

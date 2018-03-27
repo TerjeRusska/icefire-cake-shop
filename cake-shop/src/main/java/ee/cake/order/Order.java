@@ -1,17 +1,33 @@
 package ee.cake.order;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
 
+@Entity
 public class Order {
+
+    @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
     private String customerName;
     private BigDecimal price;
+    @Enumerated(EnumType.STRING)
     private StatusCode statusCode;
+    @ElementCollection
+    //@Transient
     private List<OrderCake> orderedCakes;
 
     public enum StatusCode {
         SUBMITTED, READY, DELIVERED, CANCELLED
+    }
+
+    public Order(){}
+
+    public Order(String customerName, BigDecimal price, StatusCode statusCode){
+        this.customerName = customerName;
+        this.price = price;
+        this.statusCode = statusCode;
     }
 
     public Long getId() {
