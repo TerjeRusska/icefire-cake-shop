@@ -1,26 +1,38 @@
 package ee.cake.order;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import ee.cake.cake.Cake;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
+@Table(name = "ORDER_CAKE")
 public class OrderCake {
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
+    @Column(name="ID")
     private Long id;
-    @Transient
+    @NotNull
+    @Column(name = "CAKE_ID")
+    private Long cakeId;
+    @NotNull
+    @Column(name = "ORDER_ID")
+    private Long orderId;
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "CAKE")
     private Cake cake;
-    private Long order_id;
-    private Long cake_id;
+    @NotNull
+    @Column(name="AMOUNT")
     private Integer amount;
 
-    public OrderCake(Cake cake, Long orderId, Long cakeId, Integer amount) {
-        this.cake = cake;
-        this.order_id = orderId;
-        this.cake_id = cakeId;
+    public OrderCake(Long cakeId, Long orderId, Integer amount, Cake cake) {
+        this.cakeId = cakeId;
+        this.orderId = orderId;
         this.amount = amount;
+        this.cake = cake;
     }
 
     public OrderCake(){}
@@ -49,19 +61,19 @@ public class OrderCake {
         this.amount = amount;
     }
 
-    public Long getOrder_id() {
-        return order_id;
+    public Long getOrderId() {
+        return orderId;
     }
 
-    public void setOrder_id(Long order_id) {
-        this.order_id = order_id;
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
     }
 
-    public Long getCake_id() {
-        return cake_id;
+    public Long getCakeId() {
+        return cakeId;
     }
 
-    public void setCake_id(Long cake_id) {
-        this.cake_id = cake_id;
+    public void setCakeId(Long cakeId) {
+        this.cakeId = cakeId;
     }
 }

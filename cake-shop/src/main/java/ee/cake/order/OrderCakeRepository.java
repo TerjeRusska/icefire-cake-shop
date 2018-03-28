@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface OrderCakeRepository extends CrudRepository<OrderCake, Long> {
     List<OrderCake> findAll();
+    List<OrderCake> findByOrderId(Long orderId);
 }

@@ -1,21 +1,29 @@
 package ee.cake.order;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
+@Table(name="`ORDER`")
 public class Order {
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
+    @Column(name="ID")
     private Long id;
+    @NotNull
+    @Column(name="CUSTOMER_NAME")
     private String customerName;
+    @NotNull
+    @Column(name="PRICE")
     private BigDecimal price;
+    @NotNull
     @Enumerated(EnumType.STRING)
+    @Column(name="STATUS_CODE")
     private StatusCode statusCode;
-    @ElementCollection
-    //@Transient
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "orderId")
     private List<OrderCake> orderedCakes;
 
     public enum StatusCode {

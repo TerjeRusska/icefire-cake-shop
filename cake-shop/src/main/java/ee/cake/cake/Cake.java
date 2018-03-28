@@ -1,18 +1,30 @@
 package ee.cake.cake;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 @Entity
+@Table(name = "CAKE")
 public class Cake {
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
+    @Column(name="ID")
     private Long id;
+    @NotNull
+    @Column(name="NAME")
     private String name;
+    @NotNull
+    @Column(name="PRICE")
     private BigDecimal price;
     @Transient
+    @JsonIgnore
     private String currencyCode;
+    @NotNull
+    @Column(name="AVAILABLE")
     private boolean available;
 
     public Cake(){}

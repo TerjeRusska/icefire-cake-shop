@@ -23,9 +23,6 @@ import static ee.cake.order.Order.StatusCode.SUBMITTED;
 @Transactional
 public class OrderDao {
 
-    @PersistenceContext
-    EntityManager em;
-
     @Autowired
     private JdbcTemplate database;
 
@@ -44,32 +41,48 @@ public class OrderDao {
     public void insert(NewOrderJson json) {
         Long orderId = insertOrder(json.getCustomerName(), findTotalOrderPrice(json));
         insertOrderCake(orderId, json.getCakeId(), json.getAmount());
-        //Order order = orderRepository.findOne(orderId);
-        //order.setOrderedCakes(orderCakeRepository.find);
-    }
-
-    public List<Order> findAllOrders() {
-        return database.query("SELECT * FROM ORDER;", new OrderMapper());
     }
 
     /*public List<Order> findAllOrders() {
-        return orderRepository.findAll();
+        return database.query("SELECT * FROM ORDER;", new OrderMapper());
     }*/
 
-    public void updateStatus(Long orderId, Order.StatusCode statusCode) {
+    /*public List<OrderCake> findAllOrderCakes() {
+        return database.query("SELECT * FROM ORDER_CAKE;", new OrderCakeMapper());
+    }*/
+
+    public List<OrderCake> findAllOrderCakes() {
+        return orderCakeRepository.findAll();
+    }
+
+    public List<Order> findAllOrders() {
+        return orderRepository.findAll();
+    }
+
+    /*public void updateStatus(Long orderId, Order.StatusCode statusCode) {
         List<Object> args = new ArrayList<>();
         args.add(statusCode.toString());
         args.add(orderId);
 
         database.update("UPDATE ORDER SET STATUS_CODE = ? WHERE ID = ?;", args.toArray());
+    }*/
+
+    public void updateStatus(Long orderId, Order.StatusCode statusCode) {
+        Order orderToUpdate = orderRepository.findOne(orderId);
+        orderToUpdate.setStatusCode(statusCode);
+        orderRepository.save(orderToUpdate);
     }
 
-    private List<OrderCake> findOrderedCakesByOrder(Long orderId) {
+    /*private List<OrderCake> findOrderedCakesByOrder(Long orderId) {
         List<Object> args = new ArrayList<>();
         args.add(orderId);
 
         return database.query("SELECT * FROM ORDER_CAKE WHERE ORDER_ID = ?;", args.toArray(), new OrderCakeMapper());
 
+    }*/
+
+    private List<OrderCake> findOrderedCakesByOrder(Long orderId) {
+        return orderCakeRepository.findByOrderId(orderId);
     }
 
     private BigDecimal findTotalOrderPrice(NewOrderJson json) {
@@ -85,12 +98,18 @@ public class OrderDao {
         args.add(cakeId);
         args.add(amount);
 
-        database.update("INSERT INTO ORDER_CAKE (order_id, cake_id, amount) VALUES (?,?,?);", args.toArray());
+        System.out.println(orderId);
+        System.out.println(cakeId);
+        System.out.println(amount);
+
+        //database.update("INSERT INTO ORDER_CAKE (order_id, cake_id, amount) VALUES (?,?,?);", args.toArray());
+        database.update("INSERT INTO ORDER_CAKE (order_id, cake_id, amount) VALUES (1,1,1);");
     }*/
 
     private void insertOrderCake(Long orderId, Long cakeId, Integer amount) {
-        OrderCake orderCake = new OrderCake(cakeRepository.findOne(cakeId), orderId, cakeId, amount);
-
+        System.out.println(orderId);
+        OrderCake orderCake = new OrderCake(cakeId, orderId, amount, cakeDao.findById(cakeId));
+        //OrderCake orderCake = new OrderCake(cakeId, orderId, amount);
         orderCakeRepository.save(orderCake);
     }
 
@@ -108,9 +127,15 @@ public class OrderDao {
     private Long insertOrder(String customerName, BigDecimal amount) {
         Order order = new Order(customerName, amount, SUBMITTED);
         orderRepository.save(order);
-        //em.persist(order);
-        //em.flush();
         return order.getId();
+    }
+
+    public List<Order> testOrders() {
+        return database.query("SELECT * FROM ORDER;", new OrderMapper());
+    }
+
+    public List<OrderCake> testOrderscakes() {
+        return database.query("SELECT * FROM ORDER_CAKE;", new OrderCakeMapper());
     }
 
     private final class OrderMapper implements RowMapper<Order> {
@@ -122,7 +147,6 @@ public class OrderDao {
             order.setPrice(rs.getBigDecimal("price"));
             order.setStatusCode(Order.StatusCode.valueOf(rs.getString("status_code")));
             order.setOrderedCakes(findOrderedCakesByOrder(order.getId()));
-            order.setOrderedCakes(orderCakeRepository.findAll());
             return order;
         }
     }
@@ -134,8 +158,6 @@ public class OrderDao {
             orderCake.setId(rs.getLong("id"));
             orderCake.setAmount(rs.getInt("amount"));
             orderCake.setCake(cakeDao.findById(rs.getLong("cake_id")));
-            orderCake.setCake_id(rs.getLong("cake_id"));
-            orderCake.setOrder_id(rs.getLong("order_id"));
             return orderCake;
         }
     }
