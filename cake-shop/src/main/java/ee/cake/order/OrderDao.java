@@ -9,15 +9,12 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
-import static ee.cake.order.Order.StatusCode.SUBMITTED;
+import static ee.cake.order.Orderr.StatusCode.SUBMITTED;
 
 @Component
 @Transactional
@@ -27,7 +24,7 @@ public class OrderDao {
     private JdbcTemplate database;
 
     @Autowired
-    private OrderRepository orderRepository;
+    private OrderrRepository orderrRepository;
 
     @Autowired
     private OrderCakeRepository orderCakeRepository;
@@ -40,7 +37,8 @@ public class OrderDao {
 
     public void insert(NewOrderJson json) {
         Long orderId = insertOrder(json.getCustomerName(), findTotalOrderPrice(json));
-        insertOrderCake(orderId, json.getCakeId(), json.getAmount());
+        Long orderCakeId = insertOrderCake(orderId, json.getCakeId(), json.getAmount());
+        Orderr orderr = orderrRepository.findOne(orderId);
     }
 
     /*public List<Order> findAllOrders() {
@@ -55,8 +53,8 @@ public class OrderDao {
         return orderCakeRepository.findAll();
     }
 
-    public List<Order> findAllOrders() {
-        return orderRepository.findAll();
+    public List<Orderr> findAllOrders() {
+        return orderrRepository.findAll();
     }
 
     /*public void updateStatus(Long orderId, Order.StatusCode statusCode) {
@@ -67,10 +65,10 @@ public class OrderDao {
         database.update("UPDATE ORDER SET STATUS_CODE = ? WHERE ID = ?;", args.toArray());
     }*/
 
-    public void updateStatus(Long orderId, Order.StatusCode statusCode) {
-        Order orderToUpdate = orderRepository.findOne(orderId);
+    public void updateStatus(Long orderId, Orderr.StatusCode statusCode) {
+        Orderr orderToUpdate = orderrRepository.findOne(orderId);
         orderToUpdate.setStatusCode(statusCode);
-        orderRepository.save(orderToUpdate);
+        orderrRepository.save(orderToUpdate);
     }
 
     /*private List<OrderCake> findOrderedCakesByOrder(Long orderId) {
@@ -106,11 +104,10 @@ public class OrderDao {
         database.update("INSERT INTO ORDER_CAKE (order_id, cake_id, amount) VALUES (1,1,1);");
     }*/
 
-    private void insertOrderCake(Long orderId, Long cakeId, Integer amount) {
-        System.out.println(orderId);
+    private Long insertOrderCake(Long orderId, Long cakeId, Integer amount) {
         OrderCake orderCake = new OrderCake(cakeId, orderId, amount, cakeDao.findById(cakeId));
-        //OrderCake orderCake = new OrderCake(cakeId, orderId, amount);
         orderCakeRepository.save(orderCake);
+        return orderCake.getId();
     }
 
     /*private Long insertOrder(String customerName, BigDecimal amount) {
@@ -125,27 +122,23 @@ public class OrderDao {
     }*/
 
     private Long insertOrder(String customerName, BigDecimal amount) {
-        Order order = new Order(customerName, amount, SUBMITTED);
-        orderRepository.save(order);
+        Orderr order = new Orderr(customerName, amount, SUBMITTED);
+        orderrRepository.save(order);
         return order.getId();
     }
 
-    public List<Order> testOrders() {
-        return database.query("SELECT * FROM ORDER;", new OrderMapper());
-    }
+    /*public List<Orderr> testOrders() {
+        return database.query("SELECT * FROM ORDERR;", new OrderMapper());
+    }*/
 
-    public List<OrderCake> testOrderscakes() {
-        return database.query("SELECT * FROM ORDER_CAKE;", new OrderCakeMapper());
-    }
-
-    private final class OrderMapper implements RowMapper<Order> {
+    private final class OrderMapper implements RowMapper<Orderr> {
         @Override
-        public Order mapRow(ResultSet rs, int rowNum) throws SQLException {
-            Order order = new Order();
+        public Orderr mapRow(ResultSet rs, int rowNum) throws SQLException {
+            Orderr order = new Orderr();
             order.setId(rs.getLong("id"));
             order.setCustomerName(rs.getString("customer_name"));
             order.setPrice(rs.getBigDecimal("price"));
-            order.setStatusCode(Order.StatusCode.valueOf(rs.getString("status_code")));
+            order.setStatusCode(Orderr.StatusCode.valueOf(rs.getString("status_code")));
             order.setOrderedCakes(findOrderedCakesByOrder(order.getId()));
             return order;
         }

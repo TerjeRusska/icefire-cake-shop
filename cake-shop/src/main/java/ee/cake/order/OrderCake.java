@@ -20,7 +20,7 @@ public class OrderCake {
     @NotNull
     @Column(name = "ORDER_ID")
     private Long orderId;
-    @NotNull
+    //@NotNull
     @ManyToOne
     @JoinColumn(name = "CAKE")
     private Cake cake;
