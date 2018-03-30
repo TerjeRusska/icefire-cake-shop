@@ -15,12 +15,13 @@ public class OrderCake {
     @Column(name="ID")
     private Long id;
     @NotNull
+    @JsonIgnore
     @Column(name = "CAKE_ID")
     private Long cakeId;
     @NotNull
+    @JsonIgnore
     @Column(name = "ORDER_ID")
     private Long orderId;
-    //@NotNull
     @ManyToOne
     @JoinColumn(name = "CAKE")
     private Cake cake;

@@ -40,16 +40,4 @@ public class CakeDao {
         cakeToUpdate.setAvailable(availability);
         cakeRepository.save(cakeToUpdate);
     }
-
-    private final class CakeMapper implements RowMapper<Cake> {
-        @Override
-        public Cake mapRow(ResultSet rs, int rowNum) throws SQLException {
-            Cake cake = new Cake();
-            cake.setId(rs.getLong("id"));
-            cake.setName(rs.getString("name"));
-            cake.setPrice(rs.getBigDecimal("price"));
-            cake.setAvailable(rs.getBoolean("available"));
-            return cake;
-        }
-    }
 }
