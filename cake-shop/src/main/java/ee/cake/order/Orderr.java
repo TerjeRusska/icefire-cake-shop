@@ -23,8 +23,7 @@ public class Orderr {
     @Enumerated(EnumType.STRING)
     @Column(name="STATUS_CODE")
     private Orderr.StatusCode statusCode;
-    //@Transient
-    @ElementCollection
+    @Transient
     private List<OrderCake> orderedCakes;
 
     public enum StatusCode {

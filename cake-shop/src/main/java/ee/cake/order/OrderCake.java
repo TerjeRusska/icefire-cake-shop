@@ -22,18 +22,16 @@ public class OrderCake {
     @JsonIgnore
     @Column(name = "ORDER_ID")
     private Long orderId;
-    @ManyToOne
-    @JoinColumn(name = "CAKE")
+    @Transient
     private Cake cake;
     @NotNull
     @Column(name="AMOUNT")
     private Integer amount;
 
-    public OrderCake(Long cakeId, Long orderId, Integer amount, Cake cake) {
+    public OrderCake(Long cakeId, Long orderId, Integer amount) {
         this.cakeId = cakeId;
         this.orderId = orderId;
         this.amount = amount;
-        this.cake = cake;
     }
 
     public OrderCake(){}

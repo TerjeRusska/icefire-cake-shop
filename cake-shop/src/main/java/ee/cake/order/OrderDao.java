@@ -69,7 +69,7 @@ public class OrderDao {
     }
 
     private void insertOrderCake(Long orderId, Long cakeId, Integer amount) {
-        OrderCake orderCake = new OrderCake(cakeId, orderId, amount, cakeDao.findById(cakeId));
+        OrderCake orderCake = new OrderCake(cakeId, orderId, amount);
         orderCakeRepository.save(orderCake);
     }
 
