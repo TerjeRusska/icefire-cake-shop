@@ -37,4 +37,9 @@ public class OrderController {
     public List<Orderr> findAllOrders() {
         return orderDao.findAllOrders();
     }
+
+    @GetMapping("/cakes/all")
+    public List<OrderCake> findAllOrderCakes() {
+        return orderDao.findAllOrderCakes();
+    }
 }

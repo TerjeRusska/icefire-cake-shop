@@ -37,7 +37,7 @@ public class OrderDao {
         return OrderMapper(orderrRepository.findAll());
     }
 
-    private List<Orderr> OrderMapper(List<Orderr> orderrList){
+    private List<Orderr> OrderMapper(List<Orderr> orderrList) {
         for (Orderr orderr : orderrList) {
             orderr.setOrderedCakes(findOrderedCakesByOrder(orderr.getId()));
         }
@@ -77,5 +77,9 @@ public class OrderDao {
         Orderr order = new Orderr(customerName, amount, SUBMITTED);
         orderrRepository.save(order);
         return order.getId();
+    }
+
+    public List<OrderCake> findAllOrderCakes() {
+        return OrderedCakeMapper(orderCakeRepository.findAll());
     }
 }
