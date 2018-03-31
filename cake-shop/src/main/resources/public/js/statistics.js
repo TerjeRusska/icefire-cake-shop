@@ -55,9 +55,30 @@ $( document ).ready(function() {
                 }]
             },
             options: {
+                responsive: true,
+                legend: {
+                  position: 'bottom',
+                },
                 title: {
-                    display: true,
-                    text: 'Total cakes ordered.'
+                  display: true,
+                  text: 'Total amount of ordered cakes'
+                },
+                animation: {
+                  animateScale: true,
+                  animateRotate: true
+                },
+                tooltips: {
+                  callbacks: {
+                    label: function(tooltipItem, data) {
+                    	var dataset = data.datasets[tooltipItem.datasetIndex];
+                      var total = dataset.data.reduce(function(previousValue, currentValue, currentIndex, array) {
+                        return previousValue + currentValue;
+                      });
+                      var currentValue = dataset.data[tooltipItem.index];
+                      var precentage = Math.floor(((currentValue/total) * 100)+0.5);
+                      return precentage + "%";
+                    }
+                  }
                 }
             }
         });
