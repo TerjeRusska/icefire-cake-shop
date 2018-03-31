@@ -97,9 +97,9 @@ $(function () {
             '<td>#{price} €</td>' +
             '<td>#{statusCode}</td>' +
             '<td>' +
-            '<button data-order-id="#{orderId}" type="button" class="cancel-btn btn btn-danger #{cancelBtnClass}">Tühista</button> ' +
-            '<button data-order-id="#{orderId}" type="button" class="ready-btn btn btn-light #{readyBtnClass}">Valmis</button> ' +
-            '<button data-order-id="#{orderId}" type="button" class="delivered-btn btn btn-light #{deliverBtnClass}">Kätte antud</button>' +
+            '<button data-order-id="#{orderId}" type="button" class="cancel-btn btn btn-danger #{cancelBtnClass}">Cancel</button> ' +
+            '<button data-order-id="#{orderId}" type="button" class="ready-btn btn btn-light #{readyBtnClass}">Ready</button> ' +
+            '<button data-order-id="#{orderId}" type="button" class="delivered-btn btn btn-light #{deliverBtnClass}">Delivered</button>' +
             '</td></tr>';
         const orderRows = $.map(orders, function (order) {
             return orderRowTemplate
